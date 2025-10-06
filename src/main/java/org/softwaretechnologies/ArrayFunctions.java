@@ -21,18 +21,18 @@ public final class ArrayFunctions {
             array[left] = array[right];
             array[right] = temp;
             left++;
-            right++;
+            right--;
         }
     }
 
     /**
      * Функция, заменяющая строки матрицы на столбцы матрицы. Пример:
-       1  2  3     1  4  7
-       4  5  6     2  5  8
-       7  8  9     3  6  9
+     1  2  3     1  4  7
+     4  5  6     2  5  8
+     7  8  9     3  6  9
      * Функция работает только с квадратными матрицами.
      * Если матрица не квадратная, то выведете на экран сообщение:
-       Матрица не квадратная
+     Матрица не квадратная
      * @param matrix матрица, в которой столбцы будут заменены на строки.
      */
     public static void rotateMatrix(int[][] matrix) {
@@ -41,19 +41,18 @@ public final class ArrayFunctions {
             return;
         }
 
-        // Проверяем, является ли матрица квадратной
+        // Проверяем является ли матрица квадратной
         int n = matrix.length;
-        for (int[] row : matrix) {
-            if (row == null || row.length != n) {
-                System.out.println("Матрица не квадратная");
-                return;
-            }
+
+        if (n == 0 || matrix[0] == null || matrix[0].length != n) {
+            System.out.println("Матрица не квадратная");
+            return;
         }
 
         // Транспонируем матрицу
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                // Меняем местами элементы matrix[i][j] и matrix[j][i]
+            for (int j = i; j < n; j++) {
+                // Меняем местами элементы
                 int temp = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = temp;
