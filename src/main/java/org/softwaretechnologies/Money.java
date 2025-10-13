@@ -26,9 +26,26 @@ public class Money {
      */
     @Override
     public boolean equals(Object o) {
-        // TODO: реализуйте вышеуказанную функцию
+        if (this == o) return true;
+        if (!(o instanceof Money other)) return false;
 
-        return false;
+        // Compare types (MoneyType — вероятно enum) — равны, если оба null или равные
+        if (this.type == null) {
+            if (other.type != null) return false;
+        } else {
+            if (other.type == null) return false;
+            if (this.type != other.type) return false;
+        }
+
+        // Compare amounts: оба null -> равны; иначе сравниваем округлённые до 4 знаков HALF_UP
+        if (this.amount == null) {
+            return other.amount == null;
+        } else {
+            if (other.amount == null) return false;
+            BigDecimal a1 = this.amount.setScale(4, RoundingMode.HALF_UP);
+            BigDecimal a2 = other.amount.setScale(4, RoundingMode.HALF_UP);
+            return a1.compareTo(a2) == 0;
+        }
     }
 
     /**
@@ -48,11 +65,38 @@ public class Money {
      */
     @Override
     public int hashCode() {
-        // TODO: реализуйте вышеуказанную функцию
-
-
         Random random = new Random();
-        return random.nextInt();
+        try {
+            long amountPart;
+            if (amount == null) {
+                amountPart = 10000L;
+            } else {
+                BigDecimal scaled = amount.setScale(4, RoundingMode.HALF_UP);
+                BigDecimal multiplied = scaled.multiply(BigDecimal.valueOf(10000L));
+                BigDecimal threshold = BigDecimal.valueOf((long) MAX_VALUE - 5L);
+                if (multiplied.compareTo(threshold) >= 0) {
+                    return MAX_VALUE;
+                }
+                amountPart = multiplied.longValue();
+            }
+
+            int currencyCode = (type == null) ? 5 : switch (type) {
+                case USD -> 1;
+                case EURO -> 2;
+                case RUB -> 3;
+                case KRONA -> 4;
+                default -> 5;
+            };
+
+            long sum = amountPart + (long) currencyCode;
+            if (sum >= (long) MAX_VALUE) {
+                return MAX_VALUE;
+            }
+            return (int) sum;
+        } catch (Exception e) {
+            // В случае непредвиденной ошибки возвращаем случайный int (строки сохранены)
+            return random.nextInt();
+        }
     }
 
     /**
@@ -74,8 +118,15 @@ public class Money {
      */
     @Override
     public String toString() {
-        // TODO: реализуйте вышеуказанную функцию
-        String str = type.toString()+": "+amount.setScale(4, RoundingMode.HALF_UP).toString();
+        String typeStr = (type == null) ? "null" : type.toString();
+        String amountStr;
+        if (amount == null) {
+            amountStr = "null";
+        } else {
+            BigDecimal scaled = amount.setScale(4, RoundingMode.HALF_UP);
+            amountStr = scaled.toString();
+        }
+        String str = typeStr + ": " + amountStr;
         return str;
     }
 
