@@ -24,7 +24,6 @@ public class EmployeeFactory {
             case 2 -> { return new Tester(name, baseSalary); }
         }
         return null;
-        // TODO: реализуйте вышеуказанную функцию
 
     }
 }

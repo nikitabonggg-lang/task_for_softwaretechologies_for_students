@@ -32,11 +32,11 @@ public class Company {
      * @return сумма зарплат всех сотрудников за указанный месяц
      */
     public int getMonthSalary(int month) {
-        BigDecimal summ = BigDecimal.valueOf(0);
-        for (Employee emp: employeeList){
-            summ = summ.add(BigDecimal.valueOf(emp.getMonthSalary(month)));
+        int total = 0;
+        for (Employee emp : employeeList) {
+            total += emp.getMonthSalary(month);
         }
-        return summ.intValueExact();
+        return total;
     }
 
     public String getName() {
