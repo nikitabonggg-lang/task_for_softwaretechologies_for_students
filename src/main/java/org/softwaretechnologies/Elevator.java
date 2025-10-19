@@ -82,7 +82,6 @@ public final class Elevator {
         }
 
         if (floor > currentFloor) {
-            // Поднимаемся вверх
             while (currentFloor < floor) {
                 System.out.println("Текущий этаж: " + currentFloor);
                 goUp();
